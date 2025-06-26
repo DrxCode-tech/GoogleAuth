@@ -1,37 +1,139 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-<head>
-  <title>Google Auth Test</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="text-align: center; padding-top: 100px;">
-  <h1>Login with Google</h1>
-  <button id="googleSignIn">Sign in with Google</button>
-
-  <script type="module">
-    import { auth } from './firebaseConfig.js';
-    import {
-      GoogleAuthProvider,
-      signInWithPopup,
-    } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js';
-
-    const provider = new GoogleAuthProvider();
-    const button = document.getElementById('googleSignIn');
-
-    button.addEventListener('click', async () => {
-      try {
-        alert('works');
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        alert('Signed in as: ' + user.email);
-        console.log('User info:', user);
-        // You can redirect or store user info in localStorage here
-      } catch (error) {
-        console.error('Sign-in error:', error);
-        alert('Google sign-in failed. Check console for more.');
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>create acct ADEX</title>
+  </head>
+  <style>
+    *{
+      user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+    body{
+      width: 100%;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #048d6b, white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      gap: 70px;
+      padding-top: 10px;
+    }
+    .title{
+      width: 40%;
+      height: auto;
+      padding: 20px 10px;
+      background: white;
+      color: #048d6b;
+      font-size: 2.5em;
+      font-weight: 890;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container{
+      width: 70%;
+      height: auto;
+      padding: 20px 15px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 50px;
+      border: 3px solid #87fcdf;
+    }
+    .container h2{
+      font-size: 2em;
+      font-weight: 800;
+      color: #048d6b;
+      text-shadow: 0 0 10px #87fcdf;
+    }
+    .img-div{
+      width: 150px;
+      height: 150px;
+      overflow: hidden;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 3px solid #87fcdf;
+    }
+    .img-div img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .container .acct-but{
+      position: relative;
+      margin-top: 10px;
+      width: 60%;
+      height: auto;
+      background-image: linear-gradient(45deg,#048d6b 20%,#87fcdf 30%,#048d6b 50%);
+      background-size: 200% 100%;
+      animation: button 2.3s linear infinite;
+      font-size: 1.5em;
+      font-weight: bold;
+      border-radius: 15px;
+      padding: 10px 5px;
+      color: #87fcdf;
+      transition-duration: 1s;
+    }
+    .container .acct-but:hover{
+      transform: translateY(-5px);
+    }
+    .container .acct-but::after{
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      right: -3px;
+      left: -3px;
+      background-image: linear-gradient(45deg,#048d6b 20%,#87fcdf 30%,#048d6b 50%);
+      z-index: 10;
+    }
+    @keyframes button{
+      0%{
+        background-position: -200% 100%;
       }
-    });
-  </script>
-</body>
+      100%{
+        background-position: 200% 100%;
+      }
+    }
+  </style>
+  <body>
+    <h2 class="title">ADEX</h2>
+    <div class="container">
+      <div class="img-div">
+        <img src='adexImg.jpg'>
+      </div>
+      <h2>Welcome to ADEX</h2>
+      <button class="acct-but">Create Account</button>
+    </div> 
+    <script type='module'>
+      import { auth } from './firebaseConfig.js';
+      import {
+        GoogleAuthProvider,
+        signInWithPopup,
+      } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js';
+      
+      const provider = new GoogleAuthProvider();
+      const createBut = document.querySelector('.acct-but');
+      
+      createBut.addEventListener('click',async ()=>{
+        try{
+          const result = await signInWithPopup(auth , provider);
+          const user = result.user;
+          alert('successful');
+        }catch(err){
+          alert(err.message);
+        }
+        
+      })
+    </script>
+  </body>
 </html>
