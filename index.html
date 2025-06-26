@@ -1,38 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Gmail Login with Firebase</title>
-  <script type="module">
-    import { auth } from "./firebaseConfig.js";
-    import { GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
-
-    const provider = new GoogleAuthProvider();
-
-    window.onload = () => {
-      const loginBtn = document.getElementById("loginBtn");
-
-      loginBtn.addEventListener("click", async () => {
-        try {
-          const result = await signInWithPopup(auth, provider);
-          const user = result.user;
-
-          document.getElementById("userInfo").innerHTML = `
-            <h3>Welcome, ${user.displayName}</h3>
-            <p>Email: ${user.email}</p>
-          `;
-
-          // You can save and redirect
-          localStorage.setItem("userEmail", user.email);
-          // window.location.href = `formPage.html?email=${encodeURIComponent(user.email)}`;
-
-        } catch (error) {
-          console.error("Error signing in:", error.message);
-          alert("Login failed. Try again.");
-        }
-      });
-    };
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADEX Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,7 +13,14 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
+
+    h1 {
+      color: #007f5f;
+      margin-bottom: 30px;
+    }
+
     #loginBtn {
       padding: 12px 25px;
       background-color: #4285F4;
@@ -53,14 +31,59 @@
       cursor: pointer;
       margin-bottom: 20px;
     }
+
     #loginBtn:hover {
       background-color: #357ae8;
+    }
+
+    #userInfo {
+      background: #e0ffe0;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      display: none;
     }
   </style>
 </head>
 <body>
+
   <h1>ADEX Login</h1>
   <button id="loginBtn">Sign in with Gmail</button>
   <div id="userInfo"></div>
+
+  <!-- ✅ JavaScript: Place here for proper DOM loading -->
+  <script type="module">
+    import { auth } from "./firebaseConfig.js";
+    import {
+      GoogleAuthProvider,
+      signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+
+    const provider = new GoogleAuthProvider();
+    const loginBtn = document.getElementById("loginBtn");
+    const userInfoDiv = document.getElementById("userInfo");
+
+    loginBtn.addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        userInfoDiv.innerHTML = `
+          <h3>Welcome, ${user.displayName}</h3>
+          <p>Email: ${user.email}</p>
+        `;
+        userInfoDiv.style.display = 'block';
+
+        // Optional: Save email or redirect
+        localStorage.setItem("userEmail", user.email);
+        // window.location.href = `formPage.html?email=${encodeURIComponent(user.email)}`;
+
+      } catch (error) {
+        console.error("Error signing in:", error.message);
+        alert("Login failed. Try again.");
+      }
+    });
+  </script>
+
 </body>
 </html>
