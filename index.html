@@ -1,89 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ADEX Login</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #007f5f, white);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    h1 {
-      color: #007f5f;
-      margin-bottom: 30px;
-    }
-
-    #loginBtn {
-      padding: 12px 25px;
-      background-color: #4285F4;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    #loginBtn:hover {
-      background-color: #357ae8;
-    }
-
-    #userInfo {
-      background: #e0ffe0;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #aaa;
-      display: none;
-    }
-  </style>
+  <title>Google Auth Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
+<body style="text-align: center; padding-top: 100px;">
+  <h1>Login with Google</h1>
+  <button id="googleSignIn">Sign in with Google</button>
 
-  <h1>ADEX Login</h1>
-  <button id="loginBtn">Sign in with Gmail</button>
-  <div id="userInfo"></div>
-
-  <!-- ✅ JavaScript: Place here for proper DOM loading -->
   <script type="module">
-    import { auth } from "./firebaseConfig.js";
+    import { auth } from './firebaseConfig.js';
     import {
       GoogleAuthProvider,
-      signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+      signInWithPopup,
+    } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js';
 
     const provider = new GoogleAuthProvider();
-    const loginBtn = document.getElementById("loginBtn");
-    const userInfoDiv = document.getElementById("userInfo");
+    const button = document.getElementById('googleSignIn');
 
-    loginBtn.addEventListener("click", async () => {
+    button.addEventListener('click', async () => {
       try {
+        alert('works');
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-
-        userInfoDiv.innerHTML = `
-          <h3>Welcome, ${user.displayName}</h3>
-          <p>Email: ${user.email}</p>
-        `;
-        userInfoDiv.style.display = 'block';
-
-        // Optional: Save email or redirect
-        localStorage.setItem("userEmail", user.email);
-        // window.location.href = `formPage.html?email=${encodeURIComponent(user.email)}`;
-
+        alert('Signed in as: ' + user.email);
+        console.log('User info:', user);
+        // You can redirect or store user info in localStorage here
       } catch (error) {
-        console.error("Error signing in:", error.message);
-        alert("Login failed. Try again.");
+        console.error('Sign-in error:', error);
+        alert('Google sign-in failed. Check console for more.');
       }
     });
   </script>
-
 </body>
 </html>
