@@ -305,7 +305,7 @@
           const user = result.user;
           const verify = await checkUserEmailPresent(user);
           if(verify.st){
-            return storeUser(verify.match);
+            storeUser(verify.match);
           }
           alert('Sign in successful');
           window.location.href = 'ADEXsign.html';
