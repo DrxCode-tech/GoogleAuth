@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>create acct ADEX</title>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Create Account - ADEX</title>
   <style>
     * {
       user-select: none;
@@ -140,183 +139,136 @@
       to { transform: rotate(360deg); }
     }
 
-    @media screen and (max-width: 480px) {
-      .title, .container {
-        width: 95%;
-      }
-
-      .container h2 {
-        font-size: 1.5em;
-      }
-
-      .acct-but {
-        font-size: 1em;
-        padding: 10px 0;
-      }
-    }
-    
-    .footer a{
+    .footer a {
       text-decoration: none;
-      color:#87fcdf;
-      font-weight:bold ;
+      color: #87fcdf;
+      font-weight: bold;
     }
   </style>
+</head>
 
-  <body>
-    <h2 class="title">ADEX</h2>
-    <div class="container">
-      <div class="img-div">
-        <img src="adexImg.jpg">
-      </div>
-      <h2>Welcome to ADEX</h2>
-      <button class="acct-but">Create Account</button>
+<body>
+  <h2 class="title">ADEX</h2>
+  <div class="container">
+    <div class="img-div">
+      <img src="adexImg.jpg" alt="ADEX">
     </div>
-    <div class="footer">
-      Already have an account? <a href="ADEXlogin.html">Log in</a>
-    </div>
-    <div class="spinner-container" id="spinner">
-      <div class="spinner"></div>
-      <p class="navigator">Hello user</p>
-    </div>
+    <h2>Welcome to ADEX</h2>
+    <button class="acct-but">Create Account</button>
+  </div>
+  <div class="footer">
+    Already have an account? <a href="ADEXlogin.html">Log in</a>
+  </div>
+  <div class="spinner-container" id="spinner">
+    <div class="spinner"></div>
+    <p class="navigator">Loading...</p>
+  </div>
 
-    <script type='module'>
-      import { auth , db} from './firebaseConfig.js';
-      import {
-        getDocs,
-        collection,
-      } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js';
+  <script type="module">
+    import { auth, db } from './firebaseConfig.js';
+    import { getDocs, collection } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js';
+    import { GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js';
 
-      import {
-        GoogleAuthProvider,
-        signInWithPopup,
-      } from 'https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js';
-      
-      const spin = document.querySelector('.spinner-container');
-      const navig = document.querySelector('.navigator');
-      
-      async function checkUserEmailPresent(person){
-        const email = person.email;
-        const levels = ['100','200','300','400','500'];
-        const department = ['COMPUTER_ENGINEERING','MECHANICAL_ENGINEERING','ELECTRICAL_ENGINEERING','PETROLEUM_ENGINEERING'];
-        for(level of levels){
-          for(dept of department){
-            const collect = collection(db,`user_${level}`,'department',dept);
-            try{
-              const users = await getDocs(collect);
-              const match = users.docs.find(user=>(
-                user.data().email === email
-              ))
-              if(match){
-                return {st:true,match:match.data()};
-              }
-            }catch(err){
-              console.error('Error from checking if user exist :',err.message);
-            }
-          }
+    const spin = document.getElementById('spinner');
+    const navig = document.querySelector('.navigator');
+    const createBut = document.querySelector('.acct-but');
+
+    function showSpinner(message) {
+      navig.textContent = message;
+      spin.style.display = 'flex';
+    }
+
+    function hideSpinner() {
+      spin.style.display = 'none';
+    }
+
+    function storeUser(userObj) {
+      const request = indexedDB.open('adexUsers', 1);
+      request.onupgradeneeded = function (e) {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('users')) {
+          db.createObjectStore('users');
         }
-        return {st:false};
-      }
-      
-      function storeUser(userObj){
-        const res = indexedDB.open('adexUsers',1);
-        res.onupgradeneeded = function(e){
-          const DB = e.target.result;
-          if(!DB.objectStoreNames.contains('users')){
-            DB.createObjectStore('users');
-            console.log('indexedDB created');
-          }
-        }
-        res.onsuccess = function(e){
-          const DB = e.target.result;
-          if(!DB.objectStoreNames.contains('users')){
-            return console.error('DB not yet ready');
-          }
-          const tx = DB.transaction('users','readwrite');
-          const store = tx.objectStore('users');
-          const addUser = store.put(userObj,'currentuser');
-          addUser.onsuccess = ()=>{
-            console.log('User acct verified and added successfully');
-            
-            setTimeout(()=>{
-              window.location.href = 'V3ADEX.html';
-            },1000)
-          }
-          addUser.onerror = (e)=>{
-            console.error('error message ',e.target.error)
+      };
+      request.onsuccess = function (e) {
+        const db = e.target.result;
+        const tx = db.transaction('users', 'readwrite');
+        const store = tx.objectStore('users');
+        const addUser = store.put(userObj, 'currentuser');
+        addUser.onsuccess = () => {
+          console.log('User saved in IndexedDB');
+          setTimeout(() => window.location.href = 'V3ADEX.html', 1000);
+        };
+      };
+    }
+
+    async function checkUserEmailPresent(user) {
+      const email = user.email;
+      const levels = ['100', '200', '300', '400', '500'];
+      const departments = ['COMPUTER_ENGINEERING', 'MECHANICAL_ENGINEERING', 'ELECTRICAL_ENGINEERING', 'PETROLEUM_ENGINEERING'];
+
+      for (const level of levels) {
+        for (const dept of departments) {
+          const ref = collection(db, `user_${level}`, 'department', dept);
+          try {
+            const snapshot = await getDocs(ref);
+            const found = snapshot.docs.find(doc => doc.data().email === email);
+            if (found) return { exists: true, data: found.data() };
+          } catch (err) {
+            console.error('Error checking user:', err.message);
           }
         }
       }
+      return { exists: false };
+    }
 
-      function checkPresentUser(callback){
-        const request = indexedDB.open('adexUsers', 1);
+    createBut.addEventListener('click', async () => {
+      try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
 
-        request.onupgradeneeded = function(e){
-          const DB = e.target.result;
-          if(!DB.objectStoreNames.contains('users')){
-            DB.createObjectStore('users');
-            console.log('indexedDB created');
-          }
-        }
+        showSpinner('Verifying account...');
 
-        request.onsuccess = function(e){
-          const DB = e.target.result;
-          if(!DB.objectStoreNames.contains('users')){
-            return console.error('DB not yet ready');
-          }
-          const tx = DB.transaction('users','readonly');
-          const store = tx.objectStore('users');
+        const check = await checkUserEmailPresent(user);
+        hideSpinner();
 
-          const verifyPresentUser = store.get('currentuser');
-
-          verifyPresentUser.onsuccess = function(e){
-            if(e.target.result){
-              const user = e.target.result;
-              callback(user.name);
-            }
-          }
-
-          verifyPresentUser.onerror = function(e){
-            console.error('Error reading user: ', e.target.error);
-          }
-        }
-
-        request.onerror = function(e){
-          console.error('IndexedDB error: ', e.target.error);
-        }
-      }
-
-      function navigateToMarkPage(name){
-        navig.innerHTML = `${name} logging in...`;
-        spin.style.display = 'flex';
-
-        setTimeout(() => {
-          window.location.href = 'V3ADEX.html';
-        }, 1000);
-      }
-
-      checkPresentUser(navigateToMarkPage);
-
-      const provider = new GoogleAuthProvider();
-      const createBut = document.querySelector('.acct-but');
-
-      createBut.addEventListener('click', async () => {
-        try {
-          const result = await signInWithPopup(auth, provider);
-          const user = result.user;
-          const verify = await checkUserEmailPresent(user);
-          if(verify.st){
-            storeUser(verify.match);
-          }
-          alert('Sign in successful');
+        if (check.exists) {
+          storeUser(check.data);
+        } else {
+          alert('Sign in successful. Please complete your registration.');
           window.location.href = 'ADEXsign.html';
-        } catch (err) {
-          if (err.code === 'auth/popup-closed-by-user') {
-            alert("You closed the popup. Try again.");
-          } else {
-            alert(err.message);
-          }
         }
-      });
-    </script>
-  </body>
-</html>
+      } catch (err) {
+        hideSpinner();
+        if (err.code === 'auth/popup-closed-by-user') {
+          alert("You closed the popup. Try again.");
+        } else {
+          alert("Error: " + err.message);
+        }
+      }
+    });
+
+    // Auto-login if already in IndexedDB
+    function autoLoginIfStored() {
+      const request = indexedDB.open('adexUsers', 1);
+      request.onsuccess = function (e) {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('users')) return;
+        const tx = db.transaction('users', 'readonly');
+        const store = tx.objectStore('users');
+        const getUser = store.get('currentuser');
+
+        getUser.onsuccess = () => {
+          if (getUser.result) {
+            showSpinner(`${getUser.result.name || 'User'} logging in...`);
+            setTimeout(() => window.location.href = 'V3ADEX.html', 1000);
+          }
+        };
+      };
+    }
+
+    autoLoginIfStored();
+  </script>
+</body>
+                           </html>
