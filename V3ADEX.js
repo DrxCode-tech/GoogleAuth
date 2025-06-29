@@ -177,7 +177,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function displayUserDetails(user) {
   document.getElementById('userName').textContent = user.name || 'USER NAME';
   document.getElementById('regNumber').textContent = user.regNm || 'USER_REG NUMBER';
-  document.querySelector('.user-nm').innerHTML = user.name || `<a href="LoginADEX.html">Login</a>`;
+  document.querySelector('.user-nm').innerHTML = user.name || `<a href="ADEXlogin.html">Login</a>`;
   document.querySelector('.department').textContent = user.dept || 'Department';
 }
 
@@ -218,12 +218,13 @@ function checkAttendanceState() {
   switch (day) {
     case 1: // Monday
       if (hour >= 8 && hour < 10) changeCourse(8, 10, "GST121");
+      else if (hour >= 13 && hour < 14) changeCourse(13, 14, "GET121");
       else if (hour >= 14 && hour < 16) changeCourse(14, 16, "CHM121");
       break;
     case 2: // Tuesday
       if (hour >= 8 && hour < 10) changeCourse(8, 10, "MTH122");
-      else if (hour >= 10 && hour < 12) changeCourse(10, 12, "PHY128");
-      else if (hour >= 13 && hour < 15) changeCourse(13, 15, "PHY128");
+      else if (hour >= 10 && hour < 12) changeCourse(10, 12, "PHY122");
+      else if (hour >= 13 && hour < 15) changeCourse(13, 15, "GET121");
       else if (hour >= 15 && hour < 17) changeCourse(15, 17, "STA121");
       break;
     case 3: // Wednesday
@@ -232,12 +233,14 @@ function checkAttendanceState() {
       else if (hour >= 15 && hour < 17) changeCourse(15, 17, "PHY121");
       break;
     case 4: // Thursday
-      if (hour >= 0 && hour < 20) changeCourse(0, 20, "CHM123");
+      if (hour >= 8 && hour < 10) changeCourse(8, 10, "CHM128");
       break;
     case 5: // Friday
       if (hour >= 8 && hour < 10) changeCourse(8, 10, "PHY122");
-      else if (hour >= 11 && hour < 18) changeCourse(
-        11, 18, "CPE002");
+      else if (hour >= 10 && hour < 12) changeCourse(
+        10, 12, "GET121");
+      else if (hour >= 12 && hour < 13) changeCourse(12, 13, "MTH122");
+      else if (hour >= 14 && hour < 16) changeCourse(14, 16, "GET121");
       break;
     default :
       alert('No classes today')
@@ -313,7 +316,8 @@ async function markAttendance(name, reg, dept, course, date) {
 }
 
 //geolocation
-/*async function getGeoLocsUI() {
+/*
+async function getGeoLocsUI() {
   const userLocs = [];
   const coor = [5.0385, 7.9754, 5.0398, 7.9765];
   const [minLat, minLong, maxLat, maxLong] = coor;
@@ -342,7 +346,8 @@ async function markAttendance(name, reg, dept, course, date) {
   try {
     for (let i = 0; i < 5; i++) {
       const { latitude, longitude } = await getLocation();
-      alert(latitude+""+longitude);
+      let loc = latitude+" "+longitude;
+      alert(loc);
       userLocs.push({ latitude, longitude });
     }
 
@@ -393,19 +398,28 @@ markBt.addEventListener('click',async (e)=>{
   const name = (Name.textContent.trim() !== 'USER NAME')? Name.textContent.trim() : false;
   const regNm =  (RegNM.textContent.trim() !== 'USER_REG NUMBER') ? RegNM.textContent.trim() : false;
   const department = (Department.textContent.trim() !== 'Department') ? Department.textContent.trim() : false;
-  const course = (currentCourseDisplay.textContent.trim() !== 'No class') ? currentCourseDisplay.textContent.trim() : false;
+  const cours = (currentCourseDisplay.textContent.trim() !== 'No class') ? currentCourseDisplay.textContent.trim() : false;
   
-  if(!name || !regNm || !department || !course) return alert('All ADEX forms must be meet!');
+  if(!name || !regNm || !department || !cours) return alert('All ADEX field must be filled!');
+
+  const course = cours.replace(/\s+/g, '').toUpperCase();
   
-  /*if(!navigator.geolocation) return statusDisplay(false,'Geolocation is not surpport by your brower!');
+  
+  /*if(!navigator.geolocation) return statusDisplay(false,'Geolocation is not supported by your brower!');
   spinnerContainer.style.display = 'block';
-  const verifyGeo = await getGeoLocsUI();
-  if(!verifyGeo){
-    spinnerContainer.style.display = 'none';
-    statusDisplay(false,'Warning you are not in class!');
-    return
-  }*/
-  
+  try{
+    const verifyGeo = await getGeoLocsUI();
+    if(!verifyGeo){
+      spinnerContainer.style.display = 'none';
+      statusDisplay(false,'Warning you are not in class!');
+      return;
+    }
+  }catch(err){
+    statusDisplay(false,'Internet error check connection');
+    return;
+  }
+  */
+  spinnerContainer.style.display = 'block';
   const date = getCurrentDate();
   
   //check internet connection...
@@ -418,7 +432,7 @@ markBt.addEventListener('click',async (e)=>{
   }catch(err){
     spinnerContainer.style.display = 'none';
     console.log('Error checking internet connection',err);
-    alert('Error checking internet connection'+ err);
+    alert('Error checking internet connection');
   }
   
 })
@@ -476,7 +490,7 @@ function deleteAdexDB() {
 
   deleteRequest.onsuccess = function () {
     console.log("adexDB successfully deleted.");
-    alert("Offline attendance data deleted successfully.");
+    alert("Offline attendance data synced and Marked successfully.");
   };
 
   deleteRequest.onerror = function (event) {
