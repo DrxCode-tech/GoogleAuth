@@ -102,7 +102,7 @@ async function findUserInFirestore(email, regNm) {
 }
 
 function clearUserData() {
-  const request = indexedDB.open('adexDBUsers', 1);
+  const request = indexedDB.open('adexUsers', 1);
   request.onsuccess = function (event) {
     const db = event.target.result;
     if (db.objectStoreNames.contains('users')) {
