@@ -97,7 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
     cancelState = !cancelState;
   })
   
-  const request = indexedDB.open('adexDBusers', 1);
+  const request = indexedDB.open('adexDBUsers', 1);
   
   request.onupgradeneeded = function (event) {
     const DB = event.target.result;
@@ -123,7 +123,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (users) {
         displayUserDetails(users);
       } else {
-        window.location.href = 'LoginADEX.html'; // redirect if not logged in
+        window.location.href = 'ADEXlogin.html'; // redirect if not logged in
       }
     };
   };
@@ -183,7 +183,7 @@ function displayUserDetails(user) {
 
 //log out function
 document.querySelector('.log-out').addEventListener('click',()=>{
-  window.location.href = 'LoginADEX.html';
+  window.location.href = 'ADEXlogin.html';
 })
 //online checking programmes
 async function isReallyOnline() {
