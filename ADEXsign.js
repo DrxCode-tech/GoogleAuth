@@ -143,7 +143,7 @@ async function verifyAndOpen(email,regNm,level,dept){
           email: userDt.email,
           dept: userDt.dept,
           date: userDt.date,
-          stdObj:userDt.stdObj,
+          
         };
         storeUser(newUser);
         spinner.style.display = 'none';
@@ -174,11 +174,7 @@ async function createUserAcct(user,name,regNm,email,dept,level){
     email,
     dept,
     date: new Date().toISOString(),
-    stdObj:{
-      lockState:0,
-      lockStateTime:0,
-      lockStateDate:0, 
-    }
+    
   };
   
   try{
