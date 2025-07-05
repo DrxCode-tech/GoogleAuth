@@ -245,4 +245,3 @@ signUpButton.addEventListener('submit', async (e) => {
 
   await signUpUser(result,name, email, levelInput, department, regNm);
 })
-
