@@ -250,7 +250,7 @@
         }
       }
     });
-    indexedDB.deleteDatabase('adexUsers');
+    
     // Auto-login if already in IndexedDB
     function autoLoginIfStored() {
       const request = indexedDB.open('adexUsers', 1);
