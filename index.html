@@ -259,7 +259,7 @@
         if (!db.objectStoreNames.contains('users')) return;
         const tx = db.transaction('users', 'readonly');
         const store = tx.objectStore('users');
-        const getUser = store.get('currentuser');
+        const getUser = store.get('currentUser');
 
         getUser.onsuccess = () => {
           if (getUser.result) {
