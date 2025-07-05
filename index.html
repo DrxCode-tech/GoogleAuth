@@ -183,7 +183,7 @@
     function hideSpinner() {
       spin.style.display = 'none';
     }
-    indexedDB.deleteDatabase('adexUsers');
+    
     function storeUser(userObj) {
       const request = indexedDB.open('adexUsers', 1);
       request.onupgradeneeded = function (e) {
