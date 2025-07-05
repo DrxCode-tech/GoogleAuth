@@ -196,7 +196,7 @@
         const db = e.target.result;
         const tx = db.transaction('users', 'readwrite');
         const store = tx.objectStore('users');
-        const addUser = store.put(userObj, 'currentuser');
+        const addUser = store.put(userObj, 'currentUser');
         addUser.onsuccess = () => {
           console.log('User saved in IndexedDB');
           setTimeout(() => window.location.href = 'V3ADEX.html', 1000);
