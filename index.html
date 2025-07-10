@@ -185,7 +185,7 @@
     }
     
     function storeUser(userObj) {
-      const request = indexedDB.open('adexusers', 1);
+      const request = indexedDB.open('adexUsers', 1);
       request.onupgradeneeded = function (e) {
         const db = e.target.result;
         if (!db.objectStoreNames.contains('users')) {
@@ -253,7 +253,7 @@
     
     // Auto-login if already in IndexedDB
     function autoLoginIfStored() {
-      const request = indexedDB.open('adexusers', 1);
+      const request = indexedDB.open('adexUsers', 1);
       request.onsuccess = function (e) {
         const db = e.target.result;
         if (!db.objectStoreNames.contains('users')) return;
